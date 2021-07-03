@@ -2,6 +2,7 @@ let endAudio, errorAudio, incorrectAudio, correctAudio;
 loadAudios();
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
+let firstRun = true;
 let answer = 'Type Numbers';
 let catCounter = 0;
 let allVoices = [];
@@ -140,13 +141,17 @@ function hideAnswer() {
   document.getElementById('reply').textContent = '';
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function showAnswer() {
   const msg = speak(answer);
-  msg.onstart = function() {
-    voiceInput.stop();  // 音声読み上げを音声認識しないように
-  }
-  msg.onend = function() {
-    nextProblem();
+  if (!firstRun) {
+    msg.onend = async() => {
+      await sleep(1000);
+      nextProblem();
+    }
   }
   document.getElementById('reply').textContent = answer;
 }
@@ -247,6 +252,7 @@ function startGameTimer() {
 
 let countdownTimer;
 function countdown() {
+  firstRun = false;
   clearTimeout(countdownTimer);
   gameStart.classList.remove('d-none');
   playPanel.classList.add('d-none');
