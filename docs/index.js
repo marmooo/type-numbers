@@ -14,7 +14,7 @@ function hideAnswer(){document.getElementById('reply').textContent='';}
 function showAnswer(){const msg=speak(answer);msg.onstart=function(){voiceInput.stop();}
 msg.onend=function(){nextProblem();}
 document.getElementById('reply').textContent=answer;}
-function nextProblem(){hideAnswer();const grade=document.getElementById('grade').selectedIndex+1;const max=Math.pow(10,grade)-1;answer=getRandomInt(0,max).toString();speak(answer);}
+function nextProblem(){hideAnswer();const grade=document.getElementById('grade').selectedIndex+1;const max=Math.pow(10,grade);answer=getRandomInt(0,max).toString();speak(answer);}
 function catNyan(){playAudio(errorAudio);}
 function loadImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=(e)=>reject(e);img.src=src;});}
 function loadCatImage(url){const imgSize=128;return new Promise((resolve,reject)=>{loadImage(url).then(originalImg=>{const canvas=document.createElement('canvas');canvas.width=imgSize;canvas.height=imgSize;canvas.style.position='absolute';canvas.getContext('2d').drawImage(originalImg,0,0);resolve(canvas);}).catch(e=>{console.log(e);});});}
