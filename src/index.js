@@ -3,24 +3,24 @@ loadAudios();
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 let firstRun = true;
-let answer = 'Type Numbers';
+let answer = "Type Numbers";
 let catCounter = 0;
 let allVoices = [];
 
 function loadConfig() {
-  if (localStorage.getItem('darkMode') == 1) {
-    document.documentElement.dataset.theme = 'dark';
+  if (localStorage.getItem("darkMode") == 1) {
+    document.documentElement.dataset.theme = "dark";
   }
 }
 loadConfig();
 
 function toggleDarkMode() {
-  if (localStorage.getItem('darkMode') == 1) {
-    localStorage.setItem('darkMode', 0);
+  if (localStorage.getItem("darkMode") == 1) {
+    localStorage.setItem("darkMode", 0);
     delete document.documentElement.dataset.theme;
   } else {
-    localStorage.setItem('darkMode', 1);
-    document.documentElement.dataset.theme = 'dark';
+    localStorage.setItem("darkMode", 1);
+    document.documentElement.dataset.theme = "dark";
   }
 }
 
@@ -45,8 +45,8 @@ function unlockAudio() {
 
 function loadAudio(url) {
   return fetch(url)
-    .then(response => response.arrayBuffer())
-    .then(arrayBuffer => {
+    .then((response) => response.arrayBuffer())
+    .then((arrayBuffer) => {
       return new Promise((resolve, reject) => {
         audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
           resolve(audioBuffer);
@@ -59,12 +59,12 @@ function loadAudio(url) {
 
 function loadAudios() {
   promises = [
-    loadAudio('mp3/end.mp3'),
-    loadAudio('mp3/cat.mp3'),
-    loadAudio('mp3/incorrect1.mp3'),
-    loadAudio('mp3/correct3.mp3'),
+    loadAudio("mp3/end.mp3"),
+    loadAudio("mp3/cat.mp3"),
+    loadAudio("mp3/incorrect1.mp3"),
+    loadAudio("mp3/correct3.mp3"),
   ];
-  Promise.all(promises).then(audioBuffers => {
+  Promise.all(promises).then((audioBuffers) => {
     endAudio = audioBuffers[0];
     errorAudio = audioBuffers[1];
     incorrectAudio = audioBuffers[2];
@@ -74,18 +74,18 @@ function loadAudios() {
 
 function loadVoices() {
   // https://stackoverflow.com/questions/21513706/
-  const allVoicesObtained = new Promise(function(resolve, reject) {
+  const allVoicesObtained = new Promise(function (resolve) {
     let voices = speechSynthesis.getVoices();
     if (voices.length !== 0) {
       resolve(voices);
     } else {
-      speechSynthesis.addEventListener("voiceschanged", function() {
+      speechSynthesis.addEventListener("voiceschanged", function () {
         voices = speechSynthesis.getVoices();
         resolve(voices);
       });
     }
   });
-  allVoicesObtained.then(voices => {
+  allVoicesObtained.then((voices) => {
     allVoices = voices;
     addLangRadioBox();
   });
@@ -95,37 +95,37 @@ loadVoices();
 function speak(text) {
   speechSynthesis.cancel();
   const msg = new SpeechSynthesisUtterance(text);
-  const lang = document.getElementById('langRadio').lang.value;
-  const voices = allVoices.filter(voice => voice.lang == lang);
+  const lang = document.getElementById("langRadio").lang.value;
+  const voices = allVoices.filter((voice) => voice.lang == lang);
   msg.voice = voices[Math.floor(Math.random() * voices.length)];
-  msg.lang = document.getElementById('langRadio').lang.value;
+  msg.lang = document.getElementById("langRadio").lang.value;
   speechSynthesis.speak(msg);
   return msg;
 }
 
 function addLangRadioBox() {
-  const radio = document.getElementById('langRadio');
+  const radio = document.getElementById("langRadio");
   allVoices.sort((a, b) => {
-    if (a.lang < b.lang) { return -1; }
-    if (a.lang > b.lang) { return 1; }
+    if (a.lang < b.lang) return -1;
+    if (a.lang > b.lang) return 1;
     return 0;
   }).forEach((voice, i) => {
-    const div = document.createElement('div');
-    div.className = 'form-check form-check-inline';
-    const input = document.createElement('input');
-    input.className = 'form-check-input';
-    input.name = 'lang';
-    input.type = 'radio';
-    input.id = 'radio' + i;
+    const div = document.createElement("div");
+    div.className = "form-check form-check-inline";
+    const input = document.createElement("input");
+    input.className = "form-check-input";
+    input.name = "lang";
+    input.type = "radio";
+    input.id = "radio" + i;
     input.value = voice.lang;
-    const label = document.createElement('label');
-    label.className = 'from-check-label';
-    label.for = 'radio' + i;
+    const label = document.createElement("label");
+    label.className = "from-check-label";
+    label.for = "radio" + i;
     label.textContent = voice.lang;
     div.appendChild(input);
     div.appendChild(label);
     radio.appendChild(div);
-    if (voice.lang == 'en-US' || voice.lang == 'en_US') {
+    if (voice.lang == "en-US" || voice.lang == "en_US") {
       input.checked = true;
     }
   });
@@ -138,27 +138,27 @@ function getRandomInt(min, max) {
 }
 
 function hideAnswer() {
-  document.getElementById('reply').textContent = '';
+  document.getElementById("reply").textContent = "";
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function showAnswer() {
   const msg = speak(answer);
   if (!firstRun) {
-    msg.onend = async() => {
+    msg.onend = async () => {
       await sleep(1000);
       nextProblem();
-    }
+    };
   }
-  document.getElementById('reply').textContent = answer;
+  document.getElementById("reply").textContent = answer;
 }
 
 function nextProblem() {
   hideAnswer();
-  const grade = document.getElementById('grade').selectedIndex + 1;
+  const grade = document.getElementById("grade").selectedIndex + 1;
   const max = Math.pow(10, grade);
   answer = getRandomInt(0, max).toString();
   speak(answer);
@@ -179,43 +179,43 @@ function loadImage(src) {
 
 function loadCatImage(url) {
   const imgSize = 128;
-  return new Promise((resolve, reject) => {
-    loadImage(url).then(originalImg => {
-      const canvas = document.createElement('canvas');
+  return new Promise((resolve) => {
+    loadImage(url).then((originalImg) => {
+      const canvas = document.createElement("canvas");
       canvas.width = imgSize;
       canvas.height = imgSize;
-      canvas.style.position = 'absolute';
+      canvas.style.position = "absolute";
       // drawImage() faster than putImageData()
-      canvas.getContext('2d').drawImage(originalImg, 0, 0);
+      canvas.getContext("2d").drawImage(originalImg, 0, 0);
       resolve(canvas);
-    }).catch(e => {
+    }).catch((e) => {
       console.log(e);
     });
   });
 }
-loadCatImage('kohacu.webp').then(catCanvas => {
-  catsWalk(100, catCanvas);
+loadCatImage("kohacu.webp").then((catCanvas) => {
+  catsWalk(catCanvas);
 });
 
 function catWalk(freq, catCanvas) {
-  const area = document.getElementById('catsWalk');
+  const area = document.getElementById("catsWalk");
   const width = area.offsetWidth;
   const height = area.offsetHeight;
   const canvas = catCanvas.cloneNode(true);
-  canvas.getContext('2d').drawImage(catCanvas, 0, 0);
+  canvas.getContext("2d").drawImage(catCanvas, 0, 0);
   const size = 128;
-  canvas.style.top = getRandomInt(0, height - size) + 'px';
-  canvas.style.left = width - size + 'px';
-  canvas.addEventListener('click', function() {
+  canvas.style.top = getRandomInt(0, height - size) + "px";
+  canvas.style.left = width - size + "px";
+  canvas.addEventListener("click", function () {
     catCounter += 1;
     speak(catCounter);
     this.remove();
-  }, { once:true });
+  }, { once: true });
   area.appendChild(canvas);
-  const timer = setInterval(function() {
+  const timer = setInterval(function () {
     const x = parseInt(canvas.style.left) - 1;
     if (x > -size) {
-      canvas.style.left = x + 'px';
+      canvas.style.left = x + "px";
     } else {
       clearInterval(timer);
       canvas.remove();
@@ -223,8 +223,8 @@ function catWalk(freq, catCanvas) {
   }, freq);
 }
 
-function catsWalk(freq, catCanvas) {
-  const timer = setInterval(function() {
+function catsWalk(catCanvas) {
+  setInterval(function () {
     if (Math.random() > 0.995) {
       catWalk(getRandomInt(5, 20), catCanvas);
     }
@@ -234,18 +234,18 @@ function catsWalk(freq, catCanvas) {
 let gameTimer;
 function startGameTimer() {
   clearInterval(gameTimer);
-  const timeNode = document.getElementById('time');
-  timeNode.innerText = '60秒 / 60秒';
-  gameTimer = setInterval(function() {
-    const arr = timeNode.innerText.split('秒 /');
+  const timeNode = document.getElementById("time");
+  timeNode.innerText = "60秒 / 60秒";
+  gameTimer = setInterval(function () {
+    const arr = timeNode.innerText.split("秒 /");
     const t = parseInt(arr[0]);
     if (t > 0) {
-      timeNode.innerText = (t-1) + '秒 /' + arr[1];
+      timeNode.innerText = (t - 1) + "秒 /" + arr[1];
     } else {
       clearInterval(gameTimer);
       playAudio(endAudio);
-      playPanel.classList.add('d-none');
-      scorePanel.classList.remove('d-none');
+      playPanel.classList.add("d-none");
+      scorePanel.classList.remove("d-none");
     }
   }, 1000);
 }
@@ -254,22 +254,22 @@ let countdownTimer;
 function countdown() {
   firstRun = false;
   clearTimeout(countdownTimer);
-  gameStart.classList.remove('d-none');
-  playPanel.classList.add('d-none');
-  scorePanel.classList.add('d-none');
-  const counter = document.getElementById('counter');
+  gameStart.classList.remove("d-none");
+  playPanel.classList.add("d-none");
+  scorePanel.classList.add("d-none");
+  const counter = document.getElementById("counter");
   counter.innerText = 3;
-  countdownTimer = setInterval(function(){
-    const colors = ['skyblue', 'greenyellow', 'violet', 'tomato'];
+  countdownTimer = setInterval(function () {
+    const colors = ["skyblue", "greenyellow", "violet", "tomato"];
     if (parseInt(counter.innerText) > 1) {
       const t = parseInt(counter.innerText) - 1;
       counter.style.backgroundColor = colors[t];
       counter.innerText = t;
     } else {
       clearTimeout(countdownTimer);
-      gameStart.classList.add('d-none');
-      playPanel.classList.remove('d-none');
-      document.getElementById('score').innerText = 0;
+      gameStart.classList.add("d-none");
+      playPanel.classList.remove("d-none");
+      document.getElementById("score").innerText = 0;
       nextProblem();
       startGameTimer();
     }
@@ -277,32 +277,39 @@ function countdown() {
 }
 
 function initCalc() {
-  const replyObj = document.getElementById('reply');
-  const scoreObj = document.getElementById('score');
-  document.getElementById('be').onclick = function() {
+  const replyObj = document.getElementById("reply");
+  const scoreObj = document.getElementById("score");
+  document.getElementById("be").onclick = function () {
     speak(answer);
-  }
-  document.getElementById('bc').onclick = function() {
-    replyObj.innerText = '';
-  }
-  for (let i=0; i<10; i++) {
-    document.getElementById('b' + i).onclick = function() {
+  };
+  document.getElementById("bc").onclick = function () {
+    replyObj.innerText = "";
+  };
+  for (let i = 0; i < 10; i++) {
+    document.getElementById("b" + i).onclick = function () {
       let reply = replyObj.innerText;
-      reply += this.getAttribute('id').slice(-1);
+      reply += this.getAttribute("id").slice(-1);
       replyObj.textContent = reply.slice(0, 8);
       if (answer == reply) {
         playAudio(correctAudio);
-        replyObj.innerText = '';
+        replyObj.innerText = "";
         scoreObj.innerText = parseInt(scoreObj.innerText) + 1;
         nextProblem();
       } else if (answer.slice(0, reply.length) != reply) {
         playAudio(incorrectAudio);
       }
-    }
+    };
   }
 }
 
-
 initCalc();
-document.addEventListener('click', unlockAudio, { once:true, useCapture:true });
 
+document.getElementById("toggleDarkMode").onclick = toggleDarkMode;
+document.getElementById("restartButton").onclick = countdown;
+document.getElementById("startButton").onclick = countdown;
+document.getElementById("showAnswer").onclick = showAnswer;
+document.getElementById("kohacu").onclick = catNyan;
+document.addEventListener("click", unlockAudio, {
+  once: true,
+  useCapture: true,
+});
