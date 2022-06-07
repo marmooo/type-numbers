@@ -86,50 +86,34 @@
         <pre><code>sudo apt install speech-dispatcher
 sudo apt install festival speech-dispatcher-festival</code></pre>
       </div>
-      <p><ruby>発音<rt>はつおん</rt></ruby>から<ruby>数字<rt>すうじ</rt></ruby>を<ruby>当<rt>あ</rt></ruby>てるゲームです。<ruby>世界中<rt>せかいじゅう</rt></ruby>の<ruby>言語<rt>げんご</rt></ruby>に<ruby>対応<rt>たいおう</rt></ruby>しています。<ruby>暗記<rt>あんき</rt></ruby><ruby>練習<rt>れんしゅう</rt></ruby>にもぴったり。
+      <p>発音から数字を当てるゲームです。世界樹の言語に対応しています。
+      暗記練習にもぴったり。
       </p>
-      <div id="debug"></div>
-      <div id="gameStart" class="text-center d-none">
-        <div id="countdown">
-          <div id="counter">3</div>
-          <img src="kohacu.webp" width="128" height="128" alt="">
-        </div>
-      </div>
-      <div id="scorePanel" class="text-center pb-3 d-none">
-        <h3 class="pt-3">
-          <ruby>結果<rp>(</rp><rt>けっか</rt><rp>)</rp></ruby>
-        </h3>
-        <img src="kohacu.webp" width="128" height="128" alt="">
-        <p>クリアしたのは・・・</p>
-        <div class="h2 pb-3">
-          <span id="score" class="h1">0</span>
-          <ruby>問<rp>(</rp><rt>もん</rt><rp>)</rp></ruby>！
-        </div>
-        <button id="restartButton" type="button" class="btn btn-primary btn-lg m-1">リスタート</button>
-      </div>
       <div id="playPanel">
         <div class="row">
-          <div class="col-sm">
+          <div class="col-md">
             <h5>言語を選択</h5>
-            <form id="langRadio" class="pb-3 text-center">
+            <form id="langRadio" class="pb-3 text-center notranslate">
             </form>
           </div>
-          <div class="col-sm">
-            <div class="alert alert-info text-center">
-              <div class="h5">
-                <label><ruby>時間<rp>(</rp><rt>じかん</rt><rp>)</rp></ruby>:</label>
-                <span id="time" class="ms-1">60秒 / 60秒</span>
+          <div class="col-md text-center">
+            <div class="alert alert-info">
+              <div class="d-flex flex-wrap justify-content-center">
+                <div class="h5 text-nowrap notranslate">
+                  <span id="time">60</span>
+                  <span> / 60 sec</span>
+                </div>
               </div>
-              <div>
-                <button id="startButton" class="btn btn-primary btn-lg m-1">スタート</button>
-                <button id="showAnswer" class="btn btn-secondary btn-lg m-1">こたえ</button>
+              <div class="mt-2">
+                <button id="startButton" class="btn btn-lg btn-primary">スタート</button>
+                <button id="showAnswer" class="btn btn-lg btn-secondary">こたえ</button>
               </div>
             </div>
           </div>
         </div>
         <div class="text-center pt-3">
-          <div class="pt-3 h1">解答: <span id="reply"></span></div>
-          <div class="text-center pt-3">
+          <div class="pt-3 h1">解答: <span id="reply" class="notranslate"></span></div>
+          <div class="text-center pt-3 notranslate">
             <div class="pb-1">
               <button id="b1" class="btn btn-secondary calc">1</button>
               <button id="b2" class="btn btn-secondary calc">2</button>
@@ -150,9 +134,24 @@ sudo apt install festival speech-dispatcher-festival</code></pre>
             </div>
           </div>
         </div>
-        <div id="catsWalk" class="pt-4">
+        <div id="catsWalk" class="pt-4 notranslate">
           <img id="kohacu" src="kohacu.webp" width="128" height="128" alt="kohacu">
         </div>
+      </div>
+      <div id="countPanel" class="text-center d-none notranslate">
+        <div id="countdown">
+          <div id="counter">3</div>
+          <img src="kohacu.webp" width="128" height="128" alt="">
+        </div>
+      </div>
+      <div id="scorePanel" class="text-center pb-3 d-none">
+        <h3 class="pt-3">スコア</h3>
+        <img src="kohacu.webp" width="128" height="128" alt="">
+        <p>クリアしたのは・・・</p>
+        <div class="h2 pb-3 notranslate">
+          <span id="score" class="h1">0</span>
+        </div>
+        <button id="restartButton" type="button" class="btn btn-lg btn-primary">リスタート</button>
       </div>
     </main>
     <footer class="pt-4 alert text-center">
