@@ -137,10 +137,10 @@ loadVoices();
 function speak(text) {
   speechSynthesis.cancel();
   const msg = new SpeechSynthesisUtterance(text);
-  const lang = document.getElementById("langRadio").lang.value;
+  const lang = document.getElementById("langRadio").elements.lang.value;
   const voices = allVoices.filter((voice) => voice.lang == lang);
   msg.voice = voices[Math.floor(Math.random() * voices.length)];
-  msg.lang = document.getElementById("langRadio").lang.value;
+  msg.lang = document.getElementById("langRadio").elements.lang.value;
   speechSynthesis.speak(msg);
   return msg;
 }
