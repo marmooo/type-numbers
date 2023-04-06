@@ -188,7 +188,7 @@ function nextProblem() {
 }
 
 function catNyan() {
-  playAudio(errorAudio);
+  playAudio("error");
 }
 
 function loadImage(src) {
@@ -266,7 +266,7 @@ function startGameTimer() {
       timeNode.textContent = t - 1;
     } else {
       clearInterval(gameTimer);
-      playAudio(endAudio);
+      playAudio("end");
       playPanel.classList.add("d-none");
       scorePanel.classList.remove("d-none");
     }
@@ -319,12 +319,12 @@ function initCalc() {
       reply += obj.getAttribute("id").slice(-1);
       replyObj.textContent = reply.slice(0, 8);
       if (answer == reply) {
-        playAudio(correctAudio);
+        playAudio("correct");
         replyObj.textContent = "";
         scoreObj.textContent = parseInt(scoreObj.textContent) + 1;
         nextProblem();
       } else if (answer.slice(0, reply.length) != reply) {
-        playAudio(incorrectAudio);
+        playAudio("incorrect");
       }
     };
   }
