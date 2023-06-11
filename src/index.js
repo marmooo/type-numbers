@@ -3,9 +3,11 @@ const infoPanel = document.getElementById("infoPanel");
 const countPanel = document.getElementById("countPanel");
 const scorePanel = document.getElementById("scorePanel");
 const gameTime = 60;
+let gameTimer;
 let firstRun = true;
 let answer = "Type Numbers";
 let catCounter = 0;
+let correctCount = 0;
 let allVoices = [];
 const audioContext = new AudioContext();
 const audioBufferCache = {};
@@ -13,13 +15,13 @@ loadAudio("end", "mp3/end.mp3");
 loadAudio("error", "mp3/cat.mp3");
 loadAudio("correct", "mp3/correct3.mp3");
 loadAudio("incorrect", "mp3/incorrect1.mp3");
+loadConfig();
 
 function loadConfig() {
   if (localStorage.getItem("darkMode") == 1) {
     document.documentElement.dataset.theme = "dark";
   }
 }
-loadConfig();
 
 function toggleDarkMode() {
   if (localStorage.getItem("darkMode") == 1) {
@@ -257,7 +259,32 @@ function catsWalk(catCanvas) {
   }, 10);
 }
 
-let gameTimer;
+function countdown() {
+  firstRun = false;
+  correctCount = 0;
+  countPanel.classList.remove("d-none");
+  infoPanel.classList.add("d-none");
+  playPanel.classList.add("d-none");
+  scorePanel.classList.add("d-none");
+  const counter = document.getElementById("counter");
+  counter.textContent = 3;
+  const timer = setInterval(() => {
+    const colors = ["skyblue", "greenyellow", "violet", "tomato"];
+    if (parseInt(counter.textContent) > 1) {
+      const t = parseInt(counter.textContent) - 1;
+      counter.style.backgroundColor = colors[t];
+      counter.textContent = t;
+    } else {
+      clearTimeout(timer);
+      countPanel.classList.add("d-none");
+      infoPanel.classList.remove("d-none");
+      playPanel.classList.remove("d-none");
+      nextProblem();
+      startGameTimer();
+    }
+  }, 1000);
+}
+
 function startGameTimer() {
   clearInterval(gameTimer);
   const timeNode = document.getElementById("time");
@@ -271,34 +298,7 @@ function startGameTimer() {
       playAudio("end");
       playPanel.classList.add("d-none");
       scorePanel.classList.remove("d-none");
-    }
-  }, 1000);
-}
-
-let countdownTimer;
-function countdown() {
-  firstRun = false;
-  clearTimeout(countdownTimer);
-  countPanel.classList.remove("d-none");
-  infoPanel.classList.add("d-none");
-  playPanel.classList.add("d-none");
-  scorePanel.classList.add("d-none");
-  const counter = document.getElementById("counter");
-  counter.textContent = 3;
-  countdownTimer = setInterval(() => {
-    const colors = ["skyblue", "greenyellow", "violet", "tomato"];
-    if (parseInt(counter.textContent) > 1) {
-      const t = parseInt(counter.textContent) - 1;
-      counter.style.backgroundColor = colors[t];
-      counter.textContent = t;
-    } else {
-      clearTimeout(countdownTimer);
-      countPanel.classList.add("d-none");
-      infoPanel.classList.remove("d-none");
-      playPanel.classList.remove("d-none");
-      document.getElementById("score").textContent = 0;
-      nextProblem();
-      startGameTimer();
+      scoring();
     }
   }, 1000);
 }
@@ -307,27 +307,30 @@ function initTime() {
   document.getElementById("time").textContent = gameTime;
 }
 
+function scoring() {
+  document.getElementById("score").textContent = correctCount;
+}
+
 function initCalc() {
-  const replyObj = document.getElementById("reply");
-  const scoreObj = document.getElementById("score");
+  const reply = document.getElementById("reply");
   document.getElementById("be").onclick = () => {
     speak(answer);
   };
   document.getElementById("bc").onclick = () => {
-    replyObj.textContent = "";
+    reply.textContent = "";
   };
   for (let i = 0; i < 10; i++) {
     const obj = document.getElementById("b" + i);
     obj.onclick = () => {
-      let reply = replyObj.textContent;
-      reply += obj.getAttribute("id").slice(-1);
-      replyObj.textContent = reply.slice(0, 8);
-      if (answer == reply) {
+      let replyText = reply.textContent;
+      replyText += obj.getAttribute("id").slice(-1);
+      reply.textContent = replyText.slice(0, 8);
+      if (answer == replyText) {
         playAudio("correct");
-        replyObj.textContent = "";
-        scoreObj.textContent = parseInt(scoreObj.textContent) + 1;
+        reply.textContent = "";
+        correctCount += 1;
         nextProblem();
-      } else if (answer.slice(0, reply.length) != reply) {
+      } else if (answer.slice(0, replyText.length) != replyText) {
         playAudio("incorrect");
       }
     };
