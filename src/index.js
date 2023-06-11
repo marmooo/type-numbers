@@ -130,6 +130,7 @@ function speak(text) {
 
 function addLangRadioBox() {
   const radio = document.getElementById("langRadio");
+  radio.replaceChildren();
   const langs = allVoices.map((voice) => voice.lang);
   const uniqueLangs = [...new Set(langs)];
   uniqueLangs.forEach((lang, i) => {
