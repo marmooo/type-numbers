@@ -36,7 +36,7 @@
       button { touch-action: manipulation; }
       #counter {
         font-size:10rem; width:12rem; height:12rem; line-height:12rem; border-radius: 50%;
-        background:tomato; margin:auto; }
+        background:tomato; color:black; margin:auto; }
       #catsWalk { height:30vh; text-align:center; position:relative; }
       #langRadio { max-height:100px; overflow-y:scroll; }
       img,canvas { touch-action:none; }
@@ -44,7 +44,7 @@
       @media (max-width: 768px) and (orientation: landscape) {
         .calc { font-size: 1.5rem; width:3rem; }
       }
-      html[data-bs-theme="dark"] .navbar-brand > img { filter: invert(1) hue-rotate(180deg); }
+      html[data-bs-theme="dark"] .favicon { filter: invert(1) hue-rotate(180deg); }
     </style>
   </head>
   <body>
@@ -52,7 +52,7 @@
       <nav class="navbar navbar-expand">
         <div class="container">
           <a class="navbar-brand" href="/type-numbers/">
-            <img alt="Type Numbers" src="/type-numbers/favicon/favicon.svg" width="32" height="32">
+            <img class="favicon" alt="Type Numbers" src="/type-numbers/favicon/favicon.svg" width="32" height="32">
             Type Numbers
           </a>
           <div class="navbar-nav">
@@ -150,7 +150,7 @@ sudo apt install festival speech-dispatcher-festival</code></pre>
       </div>
       <div id="countPanel" class="text-center d-none notranslate">
         <div id="countdown">
-          <div id="counter" class="text-dark"></div>
+          <div id="counter"></div>
           <img src="kohacu.webp" width="128" height="128" alt="">
         </div>
       </div>
