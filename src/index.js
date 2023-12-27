@@ -324,12 +324,12 @@ function initCalc() {
       replyText += obj.getAttribute("id").slice(-1);
       reply.textContent = replyText.slice(0, 8);
       if (answer == replyText) {
-        playAudio("correct");
+        playAudio("correct", 0.3);
         reply.textContent = "";
         correctCount += 1;
         nextProblem();
       } else if (answer.slice(0, replyText.length) != replyText) {
-        playAudio("incorrect");
+        playAudio("incorrect", 0.3);
       }
     };
   }
