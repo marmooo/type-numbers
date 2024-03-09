@@ -9,7 +9,7 @@ let answer = "Type Numbers";
 let catCounter = 0;
 let correctCount = 0;
 let allVoices = [];
-const audioContext = new AudioContext();
+const audioContext = new globalThis.AudioContext();
 const audioBufferCache = {};
 loadAudio("end", "mp3/end.mp3");
 loadAudio("error", "mp3/cat.mp3");
@@ -122,7 +122,7 @@ loadVoices();
 
 function speak(text) {
   speechSynthesis.cancel();
-  const msg = new SpeechSynthesisUtterance(text);
+  const msg = new globalThis.SpeechSynthesisUtterance(text);
   const lang = document.getElementById("langRadio").elements.lang.value;
   const voices = allVoices.filter((voice) => voice.lang == lang);
   msg.voice = voices[Math.floor(Math.random() * voices.length)];
