@@ -1,12 +1,17 @@
+import { createWorker } from "https://cdn.jsdelivr.net/npm/emoji-particle@0.0.4/+esm";
+
 const playPanel = document.getElementById("playPanel");
 const infoPanel = document.getElementById("infoPanel");
 const countPanel = document.getElementById("countPanel");
 const scorePanel = document.getElementById("scorePanel");
 const gameTime = 60;
+const emojiParticle = initEmojiParticle();
+const maxParticleCount = 10;
 let gameTimer;
 let firstRun = true;
 let answer = "Type Numbers";
 let catCounter = 0;
+let consecutiveWins = 0;
 let correctCount = 0;
 let allVoices = [];
 let audioContext;
@@ -152,6 +157,30 @@ function speak(text) {
   return msg;
 }
 
+function initEmojiParticle() {
+  const canvas = document.createElement("canvas");
+  Object.assign(canvas.style, {
+    position: "fixed",
+    pointerEvents: "none",
+    top: "0px",
+    left: "0px",
+  });
+  canvas.width = document.documentElement.clientWidth;
+  canvas.height = document.documentElement.clientHeight;
+  document.body.prepend(canvas);
+
+  const offscreen = canvas.transferControlToOffscreen();
+  const worker = createWorker();
+  worker.postMessage({ type: "init", canvas: offscreen }, [offscreen]);
+
+  globalThis.addEventListener("resize", () => {
+    const width = document.documentElement.clientWidth;
+    const height = document.documentElement.clientHeight;
+    worker.postMessage({ type: "resize", width, height });
+  });
+  return { canvas, offscreen, worker };
+}
+
 function addLangRadioBox() {
   const radio = document.getElementById("langRadio");
   radio.replaceChildren();
@@ -192,6 +221,7 @@ function sleep(ms) {
 }
 
 function showAnswer() {
+  consecutiveWins = 0;
   const msg = speak(answer);
   if (!firstRun) {
     msg.onend = async () => {
@@ -203,6 +233,16 @@ function showAnswer() {
 }
 
 function nextProblem() {
+  for (let i = 0; i < Math.min(consecutiveWins, maxParticleCount); i++) {
+    emojiParticle.worker.postMessage({
+      type: "spawn",
+      options: {
+        particleType: "popcorn",
+        originX: Math.random() * emojiParticle.canvas.width,
+        originY: Math.random() * emojiParticle.canvas.height,
+      },
+    });
+  }
   hideAnswer();
   const grade = document.getElementById("grade").selectedIndex + 1;
   const max = Math.pow(10, grade);
@@ -281,7 +321,6 @@ function catsWalk(catCanvas) {
 function countdown() {
   speak("Ready"); // unlock
   firstRun = false;
-  correctCount = 0;
   countPanel.classList.remove("d-none");
   infoPanel.classList.add("d-none");
   playPanel.classList.add("d-none");
@@ -296,6 +335,8 @@ function countdown() {
       counter.textContent = t;
     } else {
       clearInterval(timer);
+      correctCount = 0;
+      consecutiveWins = 0;
       countPanel.classList.add("d-none");
       infoPanel.classList.remove("d-none");
       playPanel.classList.remove("d-none");
@@ -349,8 +390,10 @@ function initCalc() {
         playAudio("correct", 0.3);
         reply.textContent = "";
         correctCount += 1;
+        consecutiveWins += 1;
         nextProblem();
       } else if (answer.slice(0, replyText.length) != replyText) {
+        consecutiveWins = 0;
         playAudio("incorrect", 0.3);
       }
     };
