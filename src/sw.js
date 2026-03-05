@@ -1,4 +1,4 @@
-const cacheName = "2025-11-22 00:00";
+const cacheName = "2026-03-06 00:00";
 const urlsToCache = [
   "/type-numbers/index.js",
   "/type-numbers/kohacu.webp",
